@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Angelo 💘 Daniely</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  font-family:'Press Start 2P', cursive;
+  background: linear-gradient(180deg,#ff8ecf,#b784f7);
+  color:white;
+  text-align:center;
+  overflow-x:hidden;
+  transition:opacity 1s ease;
+}
+
+.screen{
+  display:none;
+  min-height:100vh;
+  padding:40px 20px 120px 20px;
+  box-sizing:border-box;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+}
+
+.active{
+  display:flex;
+  animation:fadeInUp 0.6s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+button{
+  margin:15px;
+  padding:14px 18px;
+  font-family:'Press Start 2P', cursive;
+  border:none;
+  border-radius:14px;
+  font-size:12px;
+  cursor:pointer;
+  background:white;
+  color:#b30086;
+  transition:all 0.25s ease;
+  min-height:44px;
+  min-width:44px;
+}
+
+@media (hover: hover) {
+  button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(255,255,255,0.3);
+  }
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+button:disabled{
+  opacity:0.5;
+  cursor:not-allowed;
+}
+
+.loading {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.loading::after {
+  content: "...";
+  position: absolute;
+  right: -20px;
+  animation: dots 1s infinite;
+}
+
+@keyframes dots {
+  0%, 20% { content: "."; }
+  40% { content: ".."; }
+  60%, 100% { content: "..."; }
+}
+
+.small{font-size:10px;margin-top:15px;}
+
+#musicBtn{
+  position:fixed;
+  top:10px;
+  right:10px;
+  font-size:10px;
+  z-index:10;
+  padding:10px 15px;
+}
+
+.progress-indicator {
+  position: fixed;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  opacity: 0.7;
+  z-index: 5;
+  background: rgba(0,0,0,0.3);
+  padding: 5px 15px;
+  border-radius: 15px;
+}
+
+.choice-btn{
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(6px);
+  border:2px solid white;
+  padding:18px;
+  margin:15px 0;
+  border-radius:20px;
+  width:80%;
+  max-width:350px;
+  cursor:pointer;
+  transition:all 0.25s ease;
+  box-shadow:0 0 15px rgba(255,255,255,0.2);
+}
+
+.choice-btn:hover{
+  transform:scale(1.05);
+  box-shadow:0 0 25px #fff;
+}
+
+.choice-btn:active {
+  transform: scale(0.95);
+}
+
+.shake{animation:shake 0.4s;}
+@keyframes shake{
+  25%{transform:translateX(-6px);}
+  50%{transform:translateX(6px);}
+  75%{transform:translateX(-6px);}
+}
+
+.lock{font-size:60px;margin:20px 0;transition:all 0.5s ease;}
+
+.unlock{
+  animation:unlockAnim 0.8s ease forwards;
+}
+
+@keyframes unlockAnim{
+  50%{transform:scale(1.4) rotate(-15deg);}
+}
+
+@keyframes pulseInf{
+  0%{transform:scale(1);}
+  50%{transform:scale(1.2);}
+  100%{transform:scale(1);}
+}
+
+#cofreSecreto{
+  position:fixed;
+  bottom:40px;
+  right:40px;
+  font-size:60px;
+  z-index:9999;
+  opacity:0;
+  transform:scale(0.5);
+  transition:all 0.5s ease;
+}
+
+#cofreSecreto.mostrar{
+  opacity:1;
+  transform:scale(1);
+  animation:flotar 1.5s infinite alternate;
+}
+
+#cofreSecreto.abrir{
+  animation:abrirCofre 0.8s forwards;
+}
+
+@keyframes flotar{
+  from{transform:translateY(0);}
+  to{transform:translateY(-10px);}
+}
+
+@keyframes abrirCofre{
+  0%{transform:scale(1);}
+  50%{transform:scale(1.4) rotate(15deg);}
+  100%{transform:scale(0);opacity:0;}
+}
+
+.corazon{
+  position:fixed;
+  font-size:24px;
+  animation:subir 4s linear forwards;
+  z-index:1000;
+}
+
+@keyframes subir{
+  to{
+    transform:translateY(-600px);
+    opacity:0;
+  }
+}
+
+#mensajeFinal.visible{
+  opacity:1 !important;
+}
+
+input {
+  padding:12px;
+  font-size:14px;
+  border-radius:10px;
+  border:2px solid white;
+  text-align:center;
+  margin-top:20px;
+  width:80%;
+  max-width:300px;
+  font-family:'Press Start 2P', cursive;
+  transition: all 0.3s ease;
+}
+
+input:focus {
+  outline: none;
+  border-color: #ffeb3b;
+  box-shadow: 0 0 20px rgba(255, 235, 59, 0.5);
+}
+
+#secretCode {
+  max-width: 250px;
+}
+
+.audio-prompt {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.8);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 25px;
+  font-size: 11px;
+  z-index: 10000;
+  cursor: pointer;
+  animation: fadeInUp 0.5s ease;
+}
+
+@media screen and (max-width: 768px) {
+  input {
+    font-size: 16px !important;
+  }
+  
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .choice-btn {
+    width: 90%;
+    padding: 20px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  #mazeCanvas {
+    width: 100% !important;
+    max-width: 270px;
+    height: auto !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- Indicador de progreso -->
+<div class="progress-indicator" id="progressBar">Paso 1 de 7</div>
+
+<!-- Botón de música mejorado -->
+<button id="musicBtn" onclick="toggleMusic()" aria-label="Control de música">
+  <span id="musicIcon">🎵</span> <span id="musicText">Música</span>
+</button>
+
+<audio id="bgMusic" loop>
+<source src="musica.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="missionMusic" loop>
+<source src="musica_mision.mp3" type="audio/mpeg">
+</audio>
+
+<div class="screen active" id="screen1">
+<h3 id="typeText"></h3>
+<button onclick="goTo('screen2')">💖 Sí</button>
+<button onclick="noMessage()">💔 No</button>
+<p id="noText" class="small"></p>
+</div>
+
+<div class="screen" id="screen2">
+<p>Desde el 11 de enero de 2013 existe una palabra que no está en el diccionario... 💌<br><br>
+pero significa Novi@, risa y amor.<br><br>
+¿Cuál es?</p>
+<input 
+  type="text" 
+  id="answer"
+  placeholder="Escribe aquí..."
+  autocomplete="off"
+  autocapitalize="off"
+  spellcheck="false"
+  aria-label="Respuesta a la pregunta">
+<button onclick="checkAnswer()">Responder</button>
+<p id="result" class="small"></p>
+</div>
+
+<div class="screen" id="screen3">
+<p>Daniely 💕<br><br>
+No eres casualidad.<br><br>
+Eres mi decisión diaria.<br><br>
+Mi lugar favorito.<br><br>
+Y próximamente...<br><br>
+con quien quiero un hogar 🏠✨</p>
+<button onclick="goTo('screen4')">Siguiente ➡️</button>
+</div>
+
+<div class="screen" id="screen4">
+<h2>El próximo 14 de febrero dónde viviremos? 💞</h2>
+
+<div class="choice-btn" onclick="chooseOption('suegros', this)">😶‍🌫️ Casa de los suegros</div>
+<div class="choice-btn" onclick="chooseOption('oscar', this)">🤣 Cuarto en casa de Óscar</div>
+<div class="choice-btn" onclick="chooseOption('casita', this)">💞 Nuestra casita</div>
+<div class="choice-btn" onclick="chooseOption('twingo', this)">🚗 En el Twingo</div>
+
+<p id="optionMessage" class="small"></p>
+</div>
+
+<div class="screen" id="screen6">
+<p id="counter"></p>
+<div id="lockIcon" class="lock">🔒</div>
+
+<p>Lista para completar la misión:<br><br>
+Construir hogar 🏠<br>
+Y amarnos infinito ♾️💘</p>
+
+<input 
+  type="text" 
+  id="secretCode" 
+  placeholder="Clave secreta 🔐"
+  autocomplete="off"
+  inputmode="numeric"
+  pattern="[0-9]*"
+  maxlength="6"
+  aria-label="Código secreto">
+<button onclick="checkSecret()">Desbloquear</button>
+<p id="secretMessage" class="small"></p>
+
+<button id="acceptBtn" onclick="celebrate()" disabled>💖 Aceptar</button>
+</div>
+
+<div class="screen" id="infiniteScreen">
+  <div style="font-size:80px; animation:pulseInf 1.5s infinite;">
+    ♾️
+  </div>
+  <p style="margin-top:40px;">
+    Nuestro amor no tiene salida…<br>
+    solo destino 💘
+  </p>
+</div>
+
+<div class="screen" id="mazeScreen"></div>
+
+<div class="screen" id="pantallaSecreta">
+
+<p id="instruccionRaspa" style="margin-bottom:15px;">
+✨ Raspa la imagen para revelar la sorpresa ✨
+</p>
+
+    <div class="contenedor-scratch" style="position:relative;max-width:320px;margin:auto;">
+
+        <img src="collage-normal.jpg" 
+             class="imagen-base" 
+             style="width:100%;border-radius:20px;"
+             alt="Collage Angelo y Daniely">
+
+        <canvas id="scratchCanvas" 
+                style="position:absolute;top:0;left:0;border-radius:20px;">
+        </canvas>
+
+    </div>
+
+    <h2 id="mensajeFinal" 
+        style="margin-top:30px;opacity:0;transition:opacity 1s;">
+        💖 Feliz San Valentín 💖<br>
+        Siempre tú y yo ♾️🏡
+    </h2>
+
+</div>
+
+<script src="laberinto.js"></script>
+<script src="secreto.js"></script>
+
+<script>
+// ===========================
+// VARIABLES GLOBALES
+// ===========================
+let text = "¿Quieres ser mi 14 de febrero por 14.ª vez? 🥹💘";
+let i = 0;
+let isProcessing = false;
+let unlocked = false;
+
+const totalSteps = 7;
+let currentStep = 1;
+
+// ===========================
+// EFECTO ESCRITURA
+// ===========================
+function typeWriter(){
+  if(i < text.length){
+    document.getElementById("typeText").innerHTML += text.charAt(i);
+    i++; 
+    setTimeout(typeWriter, 40);
+  }
+}
+typeWriter();
+
+// ===========================
+// MENSAJE "NO"
+// ===========================
+function noMessage(){
+  document.getElementById("noText").innerHTML = "No te vas a librar de mí 😌";
+}
+
+// ===========================
+// CONTROL DE MÚSICA MEJORADO
+// ===========================
+function toggleMusic(){
+  let music = document.getElementById("bgMusic");
+  let icon = document.getElementById("musicIcon");
+  let text = document.getElementById("musicText");
+  
+  if(music.paused){
+    safePlayAudio(music);
+    icon.textContent = "🔊";
+    text.textContent = "Pausar";
+  } else {
+    music.pause();
+    icon.textContent = "🔇";
+    text.textContent = "Reanudar";
+  }
+}
+
+// ===========================
+// REPRODUCCIÓN SEGURA DE AUDIO
+// ===========================
+function safePlayAudio(audioElement){
+  if(audioElement && typeof audioElement.play === 'function'){
+    audioElement.play().catch(err => {
+      console.warn('Autoplay bloqueado:', err);
+      showAudioPrompt();
+    });
+  }
+}
+
+function showAudioPrompt(){
+  const prompt = document.createElement('div');
+  prompt.className = 'audio-prompt';
+  prompt.innerHTML = '🔊 Toca para activar la música';
+  prompt.onclick = () => {
+    toggleMusic();
+    prompt.remove();
+  };
+  document.body.appendChild(prompt);
+  
+  setTimeout(() => prompt.remove(), 5000);
+}
+
+// ===========================
+// NAVEGACIÓN ENTRE PANTALLAS
+// ===========================
+function goTo(screen){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(screen).classList.add('active');
+  window.scrollTo(0, 0);
+  
+  // Actualizar progreso
+  if(screen === 'screen2') currentStep = 2;
+  else if(screen === 'screen3') currentStep = 3;
+  else if(screen === 'screen4') currentStep = 4;
+  else if(screen === 'screen6') currentStep = 5;
+  else if(screen === 'infiniteScreen') currentStep = 6;
+  else if(screen === 'mazeScreen') currentStep = 7;
+  
+  updateProgress();
+}
+
+function updateProgress(){
+  let bar = document.getElementById("progressBar");
+  if(bar && currentStep <= totalSteps){
+    bar.textContent = `Paso ${currentStep} de ${totalSteps}`;
+  }
+}
+
+// ===========================
+// VERIFICAR RESPUESTA (CON PREVENCIÓN DE DOBLE CLICK)
+// ===========================
+function checkAnswer(){
+  if(isProcessing) return;
+  isProcessing = true;
+  
+  let val = document.getElementById("answer").value.toLowerCase().trim();
+  let btn = event.target;
+  btn.classList.add("loading");
+  
+  if(val === "beibii"){
+    document.getElementById("result").innerHTML = "Exacto 💖 Beibii";
+    setTimeout(() => {
+      goTo('screen3');
+      isProcessing = false;
+      btn.classList.remove("loading");
+    }, 2000);
+  } else {
+    document.getElementById("result").innerHTML = "Pista: No es baby 👀";
+    setTimeout(() => {
+      isProcessing = false;
+      btn.classList.remove("loading");
+    }, 1000);
+  }
+}
+
+// ===========================
+// SELECCIÓN DE OPCIONES
+// ===========================
+function chooseOption(option, element){
+  let msg = document.getElementById("optionMessage");
+
+  if(option === "casita"){
+    msg.innerHTML = "Correcto 💞 Nuestro hogar comienza con nosotros.";
+    setTimeout(() => goTo('screen6'), 1500);
+  } else if(option === "suegros"){
+    msg.innerHTML = "JAJAJA tú lo que quieres es comida gratis 😏";
+  } else if(option === "oscar"){
+    msg.innerHTML = "Óscar no está listo para esta responsabilidad 😂";
+  } else if(option === "twingo"){
+    msg.innerHTML = "Romántico… pero incómodo 🚗😂";
+  }
+
+  element.classList.add("shake");
+  if(navigator.vibrate) navigator.vibrate(100);
+}
+
+// ===========================
+// CONTADOR DE DÍAS
+// ===========================
+const start = new Date("2013-01-11T00:00:00");
+function updateCounter(){
+  const diff = new Date() - start;
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  document.getElementById("counter").innerHTML = 
+  "Angelo 💘 Daniely<br><br>" + days + " días juntos 💖";
+}
+setInterval(updateCounter, 1000);
+updateCounter();
+
+// ===========================
+// VERIFICAR CÓDIGO SECRETO
+// ===========================
+function checkSecret(){
+  if(isProcessing) return;
+  isProcessing = true;
+  
+  let code = document.getElementById("secretCode").value.trim();
+  let btn = event.target;
+  btn.classList.add("loading");
+  
+  if(code === "110113"){
+    document.getElementById("secretMessage").innerHTML = "Misión desbloqueada 💘";
+    let lock = document.getElementById("lockIcon");
+    lock.innerHTML = "🔓";
+    lock.classList.add("unlock");
+    unlocked = true;
+    document.getElementById("acceptBtn").disabled = false;
+    setTimeout(() => {
+      isProcessing = false;
+      btn.classList.remove("loading");
+    }, 800);
+  } else {
+    document.getElementById("secretMessage").innerHTML = "Clave incorrecta 😏";
+    setTimeout(() => {
+      isProcessing = false;
+      btn.classList.remove("loading");
+    }, 1000);
+  }
+}
+
+// ===========================
+// CELEBRACIÓN
+// ===========================
+function celebrate(){
+  if(!unlocked) return;
+
+  document.body.style.opacity = "0";
+
+  setTimeout(() => {
+    document.getElementById("bgMusic").pause();
+    goTo('infiniteScreen');
+    document.body.style.opacity = "1";
+
+    setTimeout(() => {
+      document.body.style.opacity = "0";
+      setTimeout(() => {
+        safePlayAudio(document.getElementById("missionMusic"));
+        goTo('mazeScreen');
+        iniciarLaberinto();
+        document.body.style.opacity = "1";
+      }, 1000);
+    }, 3000);
+
+  }, 1000);
+}
+</script>
+
+</body>
+</html>
